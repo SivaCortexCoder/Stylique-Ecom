@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+.outfit{
+  font-family: "Outfit", sans-serif;
+}
+
+
+/* card animation */
+.marquee-inner {
+  animation: marqueeScroll linear infinite;
+}
+
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/*end card animation */
