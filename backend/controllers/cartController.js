@@ -36,7 +36,8 @@ export const getCartItems = async (req, res) => {
     const user = await userModel.findOne({ uid }).populate('cart.productId');
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    res.status(200).json(user.cart);
+    const validCart = user.cart.filter(item => item.productId !== null);
+    res.status(200).json(validCart);
 
   } catch (error) {
     res.status(500).json({ error: error.message });

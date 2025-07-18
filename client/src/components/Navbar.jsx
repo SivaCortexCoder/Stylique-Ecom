@@ -30,10 +30,12 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [loggedUser,setLoggedUser] = useState(null)
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setIsLogged(!!user);
+      setLoggedUser(user)
     });
     return () => unsubscribe();
   }, []);
@@ -57,6 +59,7 @@ const Navbar = () => {
       toast.error("Error logging out");
     }
   };
+
 
   return (
     <div className="relative">
@@ -118,7 +121,7 @@ const Navbar = () => {
                         <User className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">Welcome!</p>
+                        <p className="text-sm font-medium text-gray-900">{loggedUser.displayName}</p>
                         <p className="text-xs text-gray-500">Manage your account</p>
                       </div>
                     </div>

@@ -28,7 +28,10 @@ export const useCartStore = create((set,get)=>({
     },
     getSubtotal: () => {
         const cart = get().cart;
-        return cart.reduce((sum, item) => sum + item.quantity * item.productId.price, 0);
+        return cart.reduce((sum, item) => {
+        if (!item.productId) return sum;
+        return sum + item.quantity * item.productId.price;
+    }, 0);
     },
 
         clearCart: async(uid)=>{

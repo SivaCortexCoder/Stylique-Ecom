@@ -11,6 +11,7 @@ const Cart = () => {
     const [user, setUser] = useState(null);
     const { cart, fetchCart, removeFromcart, updateCartItem,getSubtotal } = useCartStore();
     const navigate = useNavigate();
+    const [hidden,setIsHidden] = useState(false)
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -23,17 +24,19 @@ const Cart = () => {
         return () => unsubscribe();
     }, []);
 
-    const handleRemoveFromCart = async (productId, size) => {
-        if (!user) return;
+   const handleRemoveFromCart = async (productId, size) => {
+    if (!user) return;
 
-        try {
-            await removeFromcart({ uid: user.uid, productId, size });
-            toast.success("Removed");
-        } catch (error) {
-            console.error("Error removing from cart:", error);
-            toast.error("Error removing from cart");
-        }
-    };
+    try {
+        await removeFromcart({ uid: user.uid, productId, size });
+        await fetchCart(user.uid);
+        toast.success("Removed");
+    } catch (error) {
+        console.error("Error removing from cart:", error);
+        toast.error("Error removing from cart");
+    }
+};
+
     console.log(cart)
 
     const handleUpdateQuantity = async (productId, size, newQuantity) => {
@@ -89,7 +92,24 @@ const Cart = () => {
                                 </div>
 
                                 <div>
-                                    {cart.map((product, index) => (
+                                    {cart.map((product, index) => {
+                                         if (!product.productId) {
+                                            return (
+                                                <div key={index} className={`${hidden && 'hidden'} p-6 bg-red-50 border border-red-200 rounded-lg flex justify-between items-center mb-4`}>
+                                                    <div>
+                                                        <h3 className="text-red-700 font-semibold">One Product You added is no longer available</h3>
+                                                        <p className="text-sm text-red-500">This product was removed from the store.</p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setIsHidden(true)}
+                                                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full transition-colors cursor-pointer"
+                                                    >
+                                                        <Trash className="w-5 h-5" />
+                                                    </button>
+                                                </div>
+                                            );
+                                        }
+                                        return(
                                         <div key={index} className="p-6 hover:bg-gray-50 transition-colors">
                                             <div className="hidden md:flex items-center justify-between">
                                                 <div className="flex items-center space-x-4 flex-1">
@@ -167,7 +187,8 @@ const Cart = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
+                                        )
+                                    })}
                                 </div>
                             </div>
 

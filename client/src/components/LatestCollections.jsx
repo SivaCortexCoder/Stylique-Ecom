@@ -26,7 +26,7 @@ const LatestCollections = () => {
             {/* Products Grid */}
             <div className='max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8 '>
                 <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8'>
-                    {productData.slice(0, 5).map((item, index) => (
+                    {productData.slice(0, 4).map((item, index) => (
                         <Link 
                             key={item._id} 
                             to={`/collections/product/${item._id}`} 
