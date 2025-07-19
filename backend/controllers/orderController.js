@@ -1,6 +1,7 @@
 import orderModel from "../models/orderModel.js"
 import crypto from 'crypto'
 import Razorpay from "razorpay"
+import { sendOrderConfirmation } from "../utility/sendEmail.js"
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -92,7 +93,7 @@ export const verifyOrder = async (req, res) => {
             .digest("hex");
 
         if (generatedSignature === razorpay_signature) {
-            // Payment verified successfully
+            
             const updatedOrder = await orderModel.findByIdAndUpdate(
                 orderId, 
                 { 
@@ -109,6 +110,11 @@ export const verifyOrder = async (req, res) => {
                     message: "Order not found" 
                 });
             }
+
+            const user = await userModel.findOne({ uid: updatedOrder.uid });
+            if (user?.email) {
+             await sendOrderConfirmation(user.email, updatedOrder._id);
+    }
 
             res.json({ 
                 success: true, 
